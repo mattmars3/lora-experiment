@@ -15,16 +15,6 @@ import adafruit_rfm9x
 import signal
 import sys
 
-# --- GLOBALS HERE ---
-SHOULD_QUIT = False
-
-def sigint_handler(sig, frame):
-  print("Received Shutdown Signal")
-  SHOULD_QUIT = True
-
-# register the signal handler
-signal.signal(signal.SIGINT, sigint_handler)
-
 # Button A
 btnA = DigitalInOut(board.D5)
 btnA.direction = Direction.INPUT
