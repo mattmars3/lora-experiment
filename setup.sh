@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo apt update && sudo apt install git python3 uv
+sudo apt update && sudo apt install --yes git python3 uv python3-dev i2c-tools neovim
 
 uv venv
 source .venv/bin/activate

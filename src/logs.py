@@ -6,3 +6,11 @@
 # for both radios. When the runs are finished
 # we can read that information in, and generate
 # the necessary graphs, figures, etc
+
+class SenderRecord:
+    def __init__(self, seq, timestamp):
+        self.seq = seq
+        self.timestamp = timestamp
+
+    def to_csv_row(self):
+        return f"{seq},{timestamp}"
