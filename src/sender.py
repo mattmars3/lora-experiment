@@ -32,4 +32,3 @@ for i in range(args.num_packets):
         print(f"Sent seq #{seq}")
 
     seq += 1
-    time.sleep(0.02)

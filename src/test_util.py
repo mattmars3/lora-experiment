@@ -4,9 +4,6 @@ import board
 import adafruit_ssd1306
 import adafruit_rfm9x
 
-# def calculate_min_timeout():
-#     return 10
-
 def get_radio_handle(args, display=True):
     # Configure LoRa Radio
     CS = DigitalInOut(board.CE1)
@@ -32,12 +29,12 @@ def get_radio_handle(args, display=True):
     if display:
         print("---------------------------------------------------------")
         print("Running LoRa with the following parameters:")
-        print(f"\tcoding rate: {args.coding_rate}")
+        print(f"\tcoding rate: {args.coding_rate}/8")
         print(f"\tspreading factor: {args.spreading_factor}")
         print(f"\tbandwidth: {args.bandwidth} kHz")
         print(f"\tpreamble length: {args.preamble_length}")
         print(f"\tnum packets: {args.num_packets}")
-        print(f"\tXMIT: {rfm9x.xmit_timeout}")
+        print(f"\tXMIT timeout: {rfm9x.xmit_timeout}")
         print("---------------------------------------------------------")
 
     return rfm9x

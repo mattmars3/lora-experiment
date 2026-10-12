@@ -37,15 +37,3 @@ def get_args():
 
     args = parser.parse_args()
     return args
-
-
-def write_meta(args, file_timestamp, suffix):
-    filename = f"data/{file_timestamp}-{suffix}.csv"
-    with open(filename, "w") as output:
-        output.write(f"{args.spreading_factor},{args.bandwidth},{args.preamble_length},{args.num_packets}\n")
-
-def write_recv_metadata(args, timestamp):
-    write_meta(args, timestamp, "recv-meta")
-
-def write_send_metadata(args, timestamp):
-    write_meta(args, timestamp, "send-meta")
