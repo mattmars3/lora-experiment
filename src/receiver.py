@@ -1,45 +1,30 @@
 import time
 import busio
-from digitalio import DigitalInOut, Direction, Pull
-import board
-import adafruit_ssd1306
-import adafruit_rfm9x
-import signal
-import sys
 import datetime
-import argparse
 
+from test_args import get_args, write_recv_metadata
+from test_util import get_radio_handle
+from logs import PacketInfo, receive_and_parse_packet, write_recv_data
 
 args = get_args()
 rfm9x = get_radio_handle(args)
 
-total_expected = args.num_packets
-total_received = 0
+total_successfully_received = 0
+all_packets = []
+
+# TODO: Add support for a control-plane that can be used to semi-accurately
+#       signal a stop and start to be used in bandwidth measurements
 
 print("Listening for packets")
 while True:
     try:
         # check for packet rx
-        packet = rfm9x.receive(keep_listening=True, with_ack=False, timeout=None)
+        packet_info = receive_and_parse_packet(rfm9x)
+        if packet_info is not None:
+            if not packet_info.crc_error:
+                total_successfully_received += 1
+            all_packets.append(packet_info)
 
-        if packet is None:
-            pass
-        else:
-            # check the crc
-            if rfm9x.crc_error():
-                print("Packet failed CRC")
-                continue
-
-            # decode the packet
-            packet_text = str(packet, "utf-8")
-            parsed_seq = int(packet_text)
-            seq_received = parsed_seq
-
-            total_received += 1
-
-            timestamp = datetime.datetime.now()
-            readable_timestamp = timestamp.strftime("%H:%M:%S")
-            print(f"{readable_timestamp}: {packet_text}")
     except KeyboardInterrupt:
         break
 
@@ -48,4 +33,12 @@ while True:
         continue
 
 
-print(f"Received {total_received}/{total_expected} packets")
+timestamp = datetime.datetime.now()
+file_timestamp = timestamp.strftime("%y%m%d-%I%M%S")
+
+print(f"\t--- {total_successfully_received}/{args.num_packets} received ---")
+print(f"\t--- Data written with prefix {file_timestamp} ---")
+
+write_recv_data(all_packets, file_timestamp)
+# TODO: add support for distance guessing and other notes in metadata
+write_recv_metadata(args, file_timestamp)

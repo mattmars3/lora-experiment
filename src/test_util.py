@@ -1,3 +1,12 @@
+import busio
+from digitalio import DigitalInOut, Direction, Pull
+import board
+import adafruit_ssd1306
+import adafruit_rfm9x
+
+# def calculate_min_timeout():
+#     return 10
+
 def get_radio_handle(args, display=True):
     # Configure LoRa Radio
     CS = DigitalInOut(board.CE1)
@@ -5,8 +14,10 @@ def get_radio_handle(args, display=True):
     spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
     rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0, crc = True)
 
+    # TODO: Fix xmit_timeout to ensure no timeout occur unless there's an actual hardware issue
+
     # check bandwidth
-    if bandwidth not in rfm9x.bw_bins:
+    if (args.bandwidth * 1000) not in rfm9x.bw_bins:
         print("Invalid bandwidth entered. Choose one of the following:\n",rfm9x.bw_bins)
         sys.exit(0)
 
@@ -16,6 +27,7 @@ def get_radio_handle(args, display=True):
     rfm9x.spreading_factor = args.spreading_factor
     rfm9x.signal_bandwidth = args.bandwidth * 1000
     rfm9x.preamble_length = args.preamble_length
+    rfm9x.enable_crc = True
 
     if display:
         print("---------------------------------------------------------")
@@ -25,6 +37,7 @@ def get_radio_handle(args, display=True):
         print(f"\tbandwidth: {args.bandwidth} kHz")
         print(f"\tpreamble length: {args.preamble_length}")
         print(f"\tnum packets: {args.num_packets}")
+        print(f"\tXMIT: {rfm9x.xmit_timeout}")
         print("---------------------------------------------------------")
 
     return rfm9x

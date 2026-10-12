@@ -3,15 +3,7 @@
 # GPL License
 
 import sys
-import argparse
 import time
-import busio
-from digitalio import DigitalInOut, Direction, Pull
-import board
-import adafruit_ssd1306
-import adafruit_rfm9x
-import signal
-import sys
 import math
 
 from test_args import get_args
@@ -23,6 +15,9 @@ rfm9x = get_radio_handle(args)
 # initialize run parameters
 seq = 0
 logs = []
+
+# TODO: ensure that this cannot fail and we won't need csv logging
+# easier to ensure a good test than fix timeouts
 
 for i in range(args.num_packets):
     # Craft the message to send, and send it
