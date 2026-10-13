@@ -1,6 +1,7 @@
 import time
 import busio
 import datetime
+import pickle
 
 class SenderRecord:
     def __init__(self, seq, timestamp):
@@ -67,15 +68,13 @@ class ReceiverMeta:
         self.total_payload_received = total_payload_received
         self.transmission_duration = transmission_duration
 
+    def write_recv_metadata(self, file_timestamp: str):
+        filename = f"data/{file_timestamp}-recv-meta.pkl"
+        with open(filename, "ab") as output:
+            pickle.dump(self, output)
 
-def __write_meta(meta: ReceiverMeta, file_timestamp, suffix):
-    filename = f"data/{file_timestamp}-{suffix}.csv"
-    with open(filename, "w") as output:
-        output.write(f"{meta.args.spreading_factor},{meta.args.bandwidth},{meta.args.preamble_length},{meta.args.num_packets},{meta.total_payload_received},{meta.transmission_duration}\n")
-
-def write_recv_metadata(meta: ReceiverMeta, file_timestamp):
-    __write_meta(meta, file_timestamp, "recv-meta")
-
-def write_send_metadata(meta: ReceiverMeta, file_timestamp):
-    __write_meta(meta, file_timestamp, "send-meta")
-
+    @classmethod
+    def read_recv_metadata(cls, file_timestamp: str):
+        filename = f"data/{file_timestamp}-recv-meta.pkl"
+        with open(filename, "rb") as file:
+            return pickle.load(file)

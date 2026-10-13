@@ -5,7 +5,7 @@ import sys
 
 from test_args import get_args
 from test_util import get_radio_handle
-from logs import PacketInfo, ReceiverMeta, receive_and_parse_packet, write_recv_data, write_recv_metadata
+from logs import PacketInfo, ReceiverMeta, receive_and_parse_packet, write_recv_data
 
 args = get_args()
 rfm9x = get_radio_handle(args)
@@ -62,4 +62,4 @@ write_recv_data(all_packets, file_timestamp)
 
 # TODO: add support for distance guessing and other notes in metadata
 meta = ReceiverMeta(args, total_payload_received, transmission_duration)
-write_recv_metadata(meta, file_timestamp)
+meta.write_recv_metadata(file_timestamp)

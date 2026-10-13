@@ -34,6 +34,11 @@ def get_args():
         help="Number of total packets to send to the receiver",
         required=True, type=int
     )
+    parser.add_argument(
+        "-l", "--payload-size",
+        help="Payload size to send per packet",
+        default=25
+    )
 
     args = parser.parse_args()
     return args
