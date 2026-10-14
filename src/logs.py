@@ -1,7 +1,6 @@
 import time
 import busio
 import datetime
-import pickle
 
 class SenderRecord:
     def __init__(self, seq, timestamp):
@@ -52,29 +51,11 @@ def receive_and_parse_packet(rfm9x) -> PacketInfo | None:
             print("Packet failed CRC")
             return packet_info
 
-
+# writes headers and all records to a csv file
 def write_recv_data(all_packets, file_timestamp):
     filename = f"data/{file_timestamp}-recv.csv"
     # output the actual results
-    with open(filename, 'w') as output:
-        for packet in all_packets:
-            output.write(packet.to_csv_row() + "\n")
-
-# +++ RECEIVER METADATA BELOW
-
-class ReceiverMeta:
-    def __init__(self, args, total_payload_received, transmission_duration):
-        self.args = args
-        self.total_payload_received = total_payload_received
-        self.transmission_duration = transmission_duration
-
-    def write_recv_metadata(self, file_timestamp: str):
-        filename = f"data/{file_timestamp}-recv-meta.pkl"
-        with open(filename, "ab") as output:
-            pickle.dump(self, output)
-
-    @classmethod
-    def read_recv_metadata(cls, file_timestamp: str):
-        filename = f"data/{file_timestamp}-recv-meta.pkl"
-        with open(filename, "rb") as file:
-            return pickle.load(file)
+    output = open(filename, "w")
+    output.write("timestamp,crc_error,seq,last_rssi,last_snr,payload_size\n")
+    for packet in all_packets:
+        output.write(packet.to_csv_row() + "\n")
