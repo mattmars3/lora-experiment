@@ -3,7 +3,7 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser(
         prog="LoRa Sender",
-        description="LoRa sender program exposing tunable parameters",
+        description="LoRa testing program exposing tunable parameters",
     )
 
     parser.add_argument(
@@ -36,7 +36,7 @@ def get_args():
     )
     parser.add_argument(
         "-l", "--payload-size",
-        help="Payload size to send per packet",
+        help="Payload size to send per packet: 1 - 252 bytes",
         default=25
     )
 

@@ -27,9 +27,9 @@ total_payload_bytes_transmitted = 0
 
 for i in range(args.num_packets):
     # Craft the message to send, and send it
-    payload_size = 25
+    payload_size = int(args.payload_size)
 
-    payload = craft_payload(seq, 25)
+    payload = craft_payload(seq, payload_size)
     succeeded = rfm9x.send(payload)
 
     if not succeeded:
